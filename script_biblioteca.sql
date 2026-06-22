@@ -164,19 +164,54 @@ INSERT INTO genero (nome, descricao) VALUES
 ('Biografia', 'História da vida de uma pessoa');
 
 INSERT INTO livro (isbn, titulo, anoPublicacao, Editora_cnpj) VALUES 
-('9788535914849', 'Dom Casmurro', 1899, '11111111000101'),
-('9788595084742', 'O Senhor dos Anéis', 1954, '22222222000102'),
-('9788532524263', 'A Hora da Estrela', 1977, '33333333000103'),
-('9788520803514', '1984', 1949, '11111111000101'),
-('9788576570001', 'Fundação', 1951, '44444444000104');
+('9788595084742', 'Vidas Secas', 1938, '11111111000101'),
+('9788520923456', 'Grande Sertão: Veredas', 1956, '22222222000102'),
+('9788535904567', 'O Cortiço', 1890, '33333333000103'),
+('9788535915678', 'Capitães da Areia', 1937, '44444444000104'),
+('9788571646789', 'Macunaíma', 1928, '11111111000101'),
+('9788573267890', 'A Metamorfose', 1915, '22222222000102'),
+('9788535928901', 'O Processo', 1925, '33333333000103'),
+('9788535909012', 'Ensaio sobre a Cegueira', 1995, '44444444000104'),
+('9788571100123', 'Orgulho e Preconceito', 1813, '11111111000101'),
+('9788520911234', 'O Morro dos Ventos Uivantes', 1847, '22222222000102'),
+('9788537802345', 'Jane Eyre', 1847, '33333333000103'),
+('9788573263456', 'Frankenstein', 1818, '44444444000104'),
+('9788537804567', 'Drácula', 1897, '11111111000101'),
+('9788520915678', 'O Retrato de Dorian Gray', 1890, '22222222000102'),
+('9788573266789', 'Crime e Castigo', 1866, '33333333000103'),
+('9788573267891', 'Os Irmãos Karamázov', 1880, '44444444000104'),
+('9788573268902', 'Anna Karenina', 1877, '11111111000101'),
+('9788573269013', 'Guerra e Paz', 1869, '22222222000102'),
+('9788573260124', 'Moby Dick', 1851, '33333333000103'),
+('9788573261235', 'As Aventuras de Huckleberry Finn', 1884, '44444444000104'),
+('9788535922345', 'O Grande Gatsby', 1925, '11111111000101'),
+('9788532523456', 'O Apanhador no Campo de Centeio', 1951, '22222222000102'),
+('9788520924567', 'O Sol é para Todos', 1960, '33333333000103'),
+('9788532525678', 'O Conto da Aia', 1985, '44444444000104'),
+('9788576571234', 'Duna', 1965, '11111111000101'),
+('9788576572345', 'Neuromancer', 1984, '22222222000102'),
+('9788576573456', 'Eu, Robô', 1950, '33333333000103'),
+('9788599296493', 'O Guia do Mochileiro das Galáxias', 1979, '44444444000104'),
+('9788539004567', 'A Bússola de Ouro', 1995, '11111111000101'),
+('9788578270698', 'As Crônicas de Nárnia', 1950, '22222222000102'),
+('9788598078175', 'Percy Jackson e o Ladrão de Raios', 2005, '33333333000103'),
+('9788579800245', 'Jogos Vorazes', 2008, '44444444000104'),
+('9788579801234', 'Divergente', 2011, '11111111000101'),
+('9788580572261', 'A Culpa é das Estrelas', 2012, '22222222000102'),
+('9788520917890', 'O Caçador de Pipas', 2003, '33333333000103'),
+('9788598078168', 'A Menina que Roubava Livros', 2005, '44444444000104'),
+('9788525432186', 'Sapiens: Uma Breve História da Humanidade', 2011, '11111111000101'),
+('9788539004119', 'O Poder do Hábito', 2012, '22222222000102'),
+('9788539003839', 'Rápido e Devagar', 2011, '33333333000103'),
+('9788535217215', 'Pai Rico, Pai Pobre', 1997, '44444444000104');
 
 INSERT INTO exemplar (codigo, localizacao, status, Livro_isbn) VALUES 
-(1, 'Estante A1', 'D', '9788535914849'),
-(2, 'Estante A1', 'E', '9788535914849'),
-(3, 'Estante B2', 'D', '9788595084742'),
-(4, 'Estante C3', 'E', '9788532524263'),
-(5, 'Estante D4', 'D', '9788520803514'),
-(6, 'Estante E5', 'D', '9788576570001');
+(1, 'Estante A1', 'D', '9788595084742'),
+(2, 'Estante A1', 'E', '9788595084742'),
+(3, 'Estante B2', 'D', '9788520923456'),
+(4, 'Estante C3', 'E', '9788535915678'),
+(5, 'Estante D4', 'D', '9788571646789'),
+(6, 'Estante E5', 'D', '9788571100123');
 
 INSERT INTO emprestimo (protocolo, dataRetirada, dataLimite, dataEntrega, Usuario_cpf) VALUES 
 (101, '2026-06-01', '2026-06-15', '2026-06-10', '12345678901'),
@@ -193,18 +228,18 @@ INSERT INTO item_emprestimo (Emprestimo_prot, Exemplar_codigo) VALUES
 (105, 5);
 
 INSERT INTO livro_autor (Livro_isbn, Autor_cpf) VALUES 
-('9788535914849', '11111111111'),
-('9788595084742', '22222222222'),
-('9788532524263', '33333333333'),
-('9788520803514', '44444444444'),
-('9788576570001', '55555555555');
+('9788595084742', '11111111111'),
+('9788520923456', '22222222222'),
+('9788535915678', '33333333333'),
+('9788571646789', '44444444444'),
+('9788571100123', '55555555555');
 
 INSERT INTO livro_genero (Livro_isbn, Genero_nome) VALUES 
-('9788535914849', 'Romance'),
-('9788595084742', 'Fantasia'),
-('9788532524263', 'Romance'),
-('9788520803514', 'Distopia'),
-('9788576570001', 'Ficção Científica');
+('9788595084742', 'Romance'),
+('9788520923456', 'Fantasia'),
+('9788535915678', 'Distopia'),
+('9788571646789', 'Ficção Científica'),
+('9788571100123', 'Romance');
 
 INSERT INTO telefone_usuario (Usuario_cpf, telefone) VALUES 
 ('12345678901', '35999991111'),
@@ -245,7 +280,9 @@ WHERE nome IN (
 DELETE FROM telefone_usuario WHERE telefone = '35999995555';
 
 -- Descrição 2: Exclui o autor J.R.R. Tolkien (o CASCADE apagará em livro_autor).
--- DELETE FROM autor WHERE cpfAutor = '22222222222'; (Comentado para não atrapalhar as consultas F1 a F12)
+-- (Criamos um autor fictício apenas para ser apagado e não quebrar as outras consultas)
+INSERT INTO autor (cpfAutor, nome, sobre) VALUES ('00000000000', 'Autor Teste', 'Apagar');
+DELETE FROM autor WHERE cpfAutor = '00000000000';
 
 -- Descrição 3: Exclui um item de empréstimo devolvido.
 DELETE FROM item_emprestimo WHERE Emprestimo_prot = 104;
@@ -253,8 +290,9 @@ DELETE FROM item_emprestimo WHERE Emprestimo_prot = 104;
 -- Descrição 4: Exclui o empréstimo 104.
 DELETE FROM emprestimo WHERE protocolo = 104;
 
--- Descrição 5 (DELETE ANINHADO): Exclui exemplares cujo livro foi publicado antes de 1900.
-DELETE FROM exemplar WHERE Livro_isbn IN (SELECT isbn FROM livro WHERE anoPublicacao < 1900);
+-- Descrição 5 (DELETE ANINHADO): Exclui exemplares cujo livro foi publicado antes de 1830.
+-- Isso apagará o exemplar 6 (Orgulho e Preconceito, de 1813), que não possui empréstimos pendentes.
+DELETE FROM exemplar WHERE Livro_isbn IN (SELECT isbn FROM livro WHERE anoPublicacao < 1830);
 
 
 -- ==============================================================================
@@ -291,10 +329,10 @@ SELECT nome, 'Autor' AS tipo FROM autor
 UNION 
 SELECT nome, 'Usuario' AS tipo FROM usuario;
 
--- F7 (IN): Recupera livros cujos anos de publicação são 1949 ou 1954.
+-- F7 (IN): Recupera livros cujos anos de publicação são 1938 ou 1956.
 SELECT titulo, anoPublicacao 
 FROM livro 
-WHERE anoPublicacao IN (1949, 1954);
+WHERE anoPublicacao IN (1938, 1956);
 
 -- F8 (LIKE): Recupera usuários que usam o email da UFLA.
 SELECT nome, email 
@@ -321,11 +359,11 @@ SELECT nome
 FROM usuario u 
 WHERE EXISTS (SELECT 1 FROM emprestimo e WHERE e.Usuario_cpf = u.cpf);
 
--- EXTRA (AND, OR, NOT, BETWEEN): Recupera livros publicados entre 1950 e 1980 que NÃO sejam da editora Intrínseca (55555555000105) OU que tenham o nome "Fundação".
+-- EXTRA (AND, OR, NOT, BETWEEN): Recupera livros publicados entre 1950 e 1980 que NÃO sejam da editora Intrínseca (55555555000105) OU que tenham o nome "Duna".
 SELECT titulo 
 FROM livro 
 WHERE (anoPublicacao BETWEEN 1950 AND 1980 AND NOT Editora_cnpj = '55555555000105') 
-   OR titulo = 'Fundação';
+   OR titulo = 'Duna';
 
 
 -- ==============================================================================
@@ -379,7 +417,6 @@ CREATE USER 'estagiario'@'localhost' IDENTIFIED BY 'estagio_2026';
 GRANT SELECT, INSERT, UPDATE, DELETE ON bibliotecasaberlivre.* TO 'bibliotecario'@'localhost';
 GRANT SELECT ON bibliotecasaberlivre.v_catalogo_publico TO 'estagiario'@'localhost';
 
--- CORREÇÃO: Como o GRANT foi no banco todo (*), o REVOKE também deve ser no banco todo (*)
 -- Revoga a permissão de deletar dados de qualquer tabela para o bibliotecário
 REVOKE DELETE ON bibliotecasaberlivre.* FROM 'bibliotecario'@'localhost';
 
@@ -403,7 +440,7 @@ BEGIN
 END$$
 
 -- Teste 1:
--- SELECT titulo, fn_classifica_livro(anoPublicacao) AS tipo FROM livro;
+SELECT titulo, fn_classifica_livro(anoPublicacao) AS tipo FROM livro;
 
 -- 2. Procedimento com IF: Realiza baixa de devolução e atualiza status do exemplar
 CREATE PROCEDURE pr_realizar_devolucao(IN p_protocolo INT, OUT p_msg VARCHAR(100))
@@ -422,7 +459,7 @@ BEGIN
 END$$
 
 -- Teste 2:
--- CALL pr_realizar_devolucao(102, @mensagem); SELECT @mensagem;
+CALL pr_realizar_devolucao(102, @mensagem); SELECT @mensagem;
 
 -- 3. Procedimento com WHILE: Gera n cópias virtuais (exemplares) de um livro
 CREATE PROCEDURE pr_gerar_exemplares(IN p_isbn CHAR(13), IN p_quantidade INT, IN p_localizacao VARCHAR(50))
@@ -441,8 +478,8 @@ BEGIN
     END WHILE;
 END$$
 
--- Teste 3:
--- CALL pr_gerar_exemplares('9788576570001', 3, 'Acervo Novo');
+-- Teste 3: Utilizando o livro Duna (9788576571234)
+CALL pr_gerar_exemplares('9788576571234', 3, 'Acervo Novo');
 
 DELIMITER ;
 
@@ -459,8 +496,6 @@ BEGIN
     UPDATE exemplar SET status = 'E' WHERE codigo = NEW.Exemplar_codigo;
 END$$
 
--- Teste 1: Ao inserir na tabela item_emprestimo, consulte a tabela exemplar e veja o status mudar.
-
 -- 2. Trigger de UPDATE: Impede que o CPF do usuário seja alterado caso ele tenha empréstimos ativos.
 CREATE TRIGGER tr_valida_update_usuario BEFORE UPDATE ON usuario
 FOR EACH ROW
@@ -474,8 +509,6 @@ BEGIN
     END IF;
 END$$
 
--- Teste 2: Tente dar um UPDATE no CPF do usuário '10987654321' (Bruno Costa) que tem o empréstimo 102 pendente. Dará erro.
-
 -- 3. Trigger de DELETE: Impede a exclusão de um livro se ele possuir exemplares cadastrados (Integridade Extra).
 CREATE TRIGGER tr_valida_delete_livro BEFORE DELETE ON livro
 FOR EACH ROW
@@ -487,6 +520,34 @@ BEGIN
     END IF;
 END$$
 
--- Teste 3: DELETE FROM livro WHERE isbn = '9788595084742'; (Dará erro pois existem exemplares deste livro).
-
 DELIMITER ;
+
+-- ------------------------------------------------------------------------------
+-- TESTES DOS TRIGGERS (Selecione a linha e execute individualmente)
+-- ------------------------------------------------------------------------------
+
+-- TESTE TRIGGER 1 (INSERT)
+-- Verifique o status atual do exemplar 5 (Deve ser 'D'):
+SELECT codigo, status FROM exemplar WHERE codigo = 5;
+-- Insira ele em um empréstimo existente (ex: protocolo 101):
+INSERT INTO item_emprestimo (Emprestimo_prot, Exemplar_codigo) VALUES (101, 5);
+-- Verifique novamente o status do exemplar 5 (O trigger deve ter mudado para 'E'):
+SELECT codigo, status FROM exemplar WHERE codigo = 5;
+
+-- TESTE TRIGGER 2 (UPDATE)
+-- CASO QUE DISPARA O ERRO: Tentar mudar o CPF do Bruno Costa, que possui o empréstimo 102 pendente.
+UPDATE usuario SET cpf = '00000000000' WHERE cpf = '10987654321'; 
+
+-- CASO QUE NÃO DISPARA O ERRO: Mudar o CPF da Diana Souza, que já devolveu o livro (protocolo 104 entregue).
+UPDATE usuario SET cpf = '55566677700' WHERE cpf = '55566677788';
+-- Verificando que a alteração da Diana funcionou:
+SELECT cpf, nome FROM usuario WHERE nome = 'Diana Souza';
+
+-- TESTE TRIGGER 3 (DELETE)
+-- CASO QUE DISPARA O ERRO: Tentar excluir "Vidas Secas", que tem exemplares físicos atrelados.
+DELETE FROM livro WHERE isbn = '9788595084742';
+
+-- CASO QUE NÃO DISPARA O ERRO: Inserir um livro novo sem exemplares e depois excluí-lo.
+INSERT INTO livro (isbn, titulo, anoPublicacao, Editora_cnpj) VALUES ('9788500000000', 'Livro Sem Exemplar', 2026, '11111111000101');
+-- A exclusão abaixo vai funcionar normalmente:
+DELETE FROM livro WHERE isbn = '9788500000000';
