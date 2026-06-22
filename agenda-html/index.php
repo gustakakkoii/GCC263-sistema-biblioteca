@@ -73,7 +73,7 @@
           $alt     = $alturas[$idx % count($alturas)];
           $larg    = $larguras[$idx % count($larguras)];
 
-          // Preparando todas as variáveis (incluindo as novas)
+          // Preparando todas as variáveis
           $isbn    = addslashes(htmlspecialchars($livro['isbn'],          ENT_QUOTES));
           $titulo  = addslashes(htmlspecialchars($livro['titulo'],        ENT_QUOTES));
           $ano     = addslashes(htmlspecialchars($livro['anoPublicacao'], ENT_QUOTES));
@@ -83,7 +83,7 @@
           $autores = addslashes(htmlspecialchars($livro['autores'] ? $livro['autores'] : 'Não informado', ENT_QUOTES));
           $generos = addslashes(htmlspecialchars($livro['generos'] ? $livro['generos'] : 'Não informado', ENT_QUOTES));
 
-          // Passando as novas variáveis para a função abrirModal
+          // Passando as variáveis para a função abrirModal
           echo "<div class='livro' style='width:{$larg}px'
                      onclick=\"abrirModal('{$isbn}','{$titulo}','{$ano}','{$nomeeditora}','{$cnpjeditora}','{$cor}','{$autores}','{$generos}','{$sobre}')\">";
           echo "  <div class='livro-corpo {$cor}' style='height:{$alt}px;width:{$larg}px'>";
