@@ -1,0 +1,25 @@
+--------------Como rodar programas em PHP no Ubuntu do laboratório do DCC--------------
+-- Apache é o servidor Web instalado no laboratório
+-- Os arquivos PHP devem ser adicionados ao diretório /var/www/html
+-- Criar o banco de dados e verificar as configurações de login/senha (arquivo config.php)
+-- No browser, abrir o endereço http://localhost
+   Pra rodar o exemplo: http://localhost/agenda-html/index.php
+
+--------------Como rodar programas em PHP no Ubuntu com o servidor LAMP fora do laboratório do DCC--------------
+-- Instalar ambiente de desenvolvimento XAMPP (https://www.apachefriends.org/)
+   O XAMPP é um programa que "emula" um servidor LAMP (PHP + Apache + MySQL)
+   Troque no comando abaixo o nome do arquivo que você baixou, caso não seja a mesma versão.
+   sudo wget https://www.apachefriends.org/xampp-files/5.6.20/xampp-linux-x64-8.2.12-0-installer.run
+   sudo su
+   chmod +x xampp-linux-x64-8.2.12-0-installer.run
+   ./xampp-linux-x64-8.2.12-0-installer.run
+-- Inicializar o servidor Lamp - https://www.vivaolinux.com.br/dica/Trabalhando-com-Xampp-no-Linux
+   # /opt/lampp/lampp start
+   # /opt/lampp/lampp stop
+-- É criado o diretório /opt/lampp
+-- Os arquivos PHP devem ser adicionados ao diretório /opt/lampp/htdocs
+-- Iniciar MySQL, criar o banco de dados e verificar as configurações de login/senha (arquivo config.php)
+-- No browser, abrir o endereço http://localhost
+   Pra rodar o exemplo: http://localhost/agenda-html/index.php
+
+
