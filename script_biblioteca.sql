@@ -3,6 +3,7 @@
 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';
+SET FOREIGN_KEY_CHECKS = 1;
 
 CREATE SCHEMA IF NOT EXISTS `bibliotecasaberlivre` DEFAULT CHARACTER SET utf8mb4 ;
 USE `bibliotecasaberlivre` ;
@@ -129,6 +130,7 @@ CREATE TABLE IF NOT EXISTS `tabela_temporaria` (
   `id` INT PRIMARY KEY,
   `dado` VARCHAR(50)
 );
+
 DROP TABLE `tabela_temporaria`;
 
 
@@ -489,14 +491,14 @@ DELIMITER ;
 -- ==============================================================================
 DELIMITER $$
 
--- 1. Trigger de INSERT: Ao inserir um novo item_emprestimo, altera o status do exemplar para 'E' (Emprestado).
+-- 1. TRIGGER (AFTER INSERT): Automatiza a mudança de status do Exemplar para Emprestado ('E') assim que ele sai da biblioteca.
 CREATE TRIGGER tr_atualiza_status_exemplar AFTER INSERT ON item_emprestimo
 FOR EACH ROW
 BEGIN
     UPDATE exemplar SET status = 'E' WHERE codigo = NEW.Exemplar_codigo;
 END$$
 
--- 2. Trigger de UPDATE: Impede que o CPF do usuário seja alterado caso ele tenha empréstimos ativos.
+-- 2. TRIGGER (BEFORE UPDATE): Protege o sistema impedindo a alteração cadastral de CPF de um Usuário que possua dívidas/empréstimos ativos.
 CREATE TRIGGER tr_valida_update_usuario BEFORE UPDATE ON usuario
 FOR EACH ROW
 BEGIN
@@ -509,7 +511,7 @@ BEGIN
     END IF;
 END$$
 
--- 3. Trigger de DELETE: Impede a exclusão de um livro se ele possuir exemplares cadastrados (Integridade Extra).
+-- 3. TRIGGER (BEFORE DELETE): Restrição vital. Bloqueia a exclusão de uma obra do catálogo caso existam itens de prateleira (exemplares) vinculados a ela.
 CREATE TRIGGER tr_valida_delete_livro BEFORE DELETE ON livro
 FOR EACH ROW
 BEGIN
@@ -522,32 +524,49 @@ END$$
 
 DELIMITER ;
 
--- ------------------------------------------------------------------------------
--- TESTES DOS TRIGGERS (Selecione a linha e execute individualmente)
--- ------------------------------------------------------------------------------
+-- ----------------------------------------------------------------------------
+-- TESTES DOCUMENTADOS DOS TRIGGERS (Disparos e Não Disparos)
+-- ----------------------------------------------------------------------------
 
--- TESTE TRIGGER 1 (INSERT)
--- Verifique o status atual do exemplar 5 (Deve ser 'D'):
-SELECT codigo, status FROM exemplar WHERE codigo = 5;
--- Insira ele em um empréstimo existente (ex: protocolo 101):
+-- ---------------------------------------------------------
+-- TESTES TRIGGER 1 (AFTER INSERT em item_emprestimo)
+-- ---------------------------------------------------------
+-- CASO DISPARADO (Condição de sucesso na inserção ativando o gatilho):
+-- Inserimos um novo item no empréstimo 101 usando o exemplar 5 (que estava status 'D').
 INSERT INTO item_emprestimo (Emprestimo_prot, Exemplar_codigo) VALUES (101, 5);
--- Verifique novamente o status do exemplar 5 (O trigger deve ter mudado para 'E'):
-SELECT codigo, status FROM exemplar WHERE codigo = 5;
+-- Resultado: O trigger é disparado e altera automaticamente o status do exemplar 5 para 'E'.
 
--- TESTE TRIGGER 2 (UPDATE)
--- CASO QUE DISPARA O ERRO: Tentar mudar o CPF do Bruno Costa, que possui o empréstimo 102 pendente.
-UPDATE usuario SET cpf = '00000000000' WHERE cpf = '10987654321'; 
+-- CASO NÃO DISPARADO (Falha anterior ao evento AFTER):
+-- Tentamos inserir um item com um código de exemplar que não existe (Ex: 999).
+INSERT INTO item_emprestimo (Emprestimo_prot, Exemplar_codigo) VALUES (101, 999);
+-- Resultado: O SGBD barra a operação por violação de Chave Estrangeira (FK). Como a inserção falha, o trigger AFTER INSERT não chega a ser disparado.
 
--- CASO QUE NÃO DISPARA O ERRO: Mudar o CPF da Diana Souza, que já devolveu o livro (protocolo 104 entregue).
-UPDATE usuario SET cpf = '55566677700' WHERE cpf = '55566677788';
--- Verificando que a alteração da Diana funcionou:
-SELECT cpf, nome FROM usuario WHERE nome = 'Diana Souza';
 
--- TESTE TRIGGER 3 (DELETE)
--- CASO QUE DISPARA O ERRO: Tentar excluir "Vidas Secas", que tem exemplares físicos atrelados.
+-- ---------------------------------------------------------
+-- TESTES TRIGGER 2 (BEFORE UPDATE em usuario)
+-- ---------------------------------------------------------
+-- CASO DISPARADO (IF ativado - Bloqueio por pendência):
+-- Tentamos alterar o CPF do Carlos Mendes (11122233344), que possui o empréstimo 103 pendente (dataEntrega = NULL).
+UPDATE usuario SET cpf = '00000000000' WHERE cpf = '11122233344'; 
+-- Resultado: O trigger é disparado, entra na condição IF (pendencias > 0) e lança o Erro 45000, bloqueando o UPDATE.
+
+-- CASO NÃO DISPARADO (IF ignorado - Permite alteração):
+-- Tentamos alterar o CPF da Ana Silva (12345678901), cujo empréstimo 101 já possui a data de entrega preenchida.
+UPDATE usuario SET cpf = '12345678900' WHERE cpf = '12345678901';
+-- Resultado: O trigger roda, mas como a contagem de pendências é 0, a condição de bloqueio não é disparada e o CPF é alterado perfeitamente.
+
+
+-- ---------------------------------------------------------
+-- TESTES TRIGGER 3 (BEFORE DELETE em livro)
+-- ---------------------------------------------------------
+-- CASO DISPARADO (IF ativado - Bloqueio estrutural):
+-- Tentamos excluir o livro "Vidas Secas" (ISBN 9788595084742), que possui exemplares (1 e 2) registrados no acervo.
 DELETE FROM livro WHERE isbn = '9788595084742';
+-- Resultado: O trigger é disparado, identifica a contagem de exemplares > 0 e lança o Erro 45000, barrando o DELETE.
 
--- CASO QUE NÃO DISPARA O ERRO: Inserir um livro novo sem exemplares e depois excluí-lo.
-INSERT INTO livro (isbn, titulo, anoPublicacao, Editora_cnpj) VALUES ('9788500000000', 'Livro Sem Exemplar', 2026, '11111111000101');
--- A exclusão abaixo vai funcionar normalmente:
+-- CASO NÃO DISPARADO (IF ignorado - Permite exclusão):
+-- Inserimos um livro fictício sem exemplares na estante e em seguida tentamos excluí-lo.
+INSERT INTO livro (isbn, titulo, anoPublicacao, Editora_cnpj) VALUES ('9788500000000', 'Livro Teste Sem Exemplar', 2026, '11111111000101');
 DELETE FROM livro WHERE isbn = '9788500000000';
+-- Resultado: Como a contagem de exemplares é 0, a condição IF de bloqueio não é disparada e o livro é apagado com sucesso.
+
