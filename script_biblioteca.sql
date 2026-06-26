@@ -1,9 +1,10 @@
 -- MySQL Workbench Forward Engineering
 
 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
-SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=1;
+SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';
-	
+SET FOREIGN_KEY_CHECKS = 1;
+    
 -- -----------------------------------------------------
 -- Schema bibliotecasaberlivre
 -- -----------------------------------------------------
@@ -58,7 +59,8 @@ CREATE TABLE IF NOT EXISTS `bibliotecasaberlivre`.`emprestimo` (
   INDEX `fk_emprestimo_usuario` (`Usuario_cpf` ASC),
   CONSTRAINT `fk_emprestimo_usuario`
     FOREIGN KEY (`Usuario_cpf`)
-    REFERENCES `bibliotecasaberlivre`.`usuario` (`cpf`))
+    REFERENCES `bibliotecasaberlivre`.`usuario` (`cpf`)
+    ON UPDATE CASCADE)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4;
 
@@ -70,12 +72,13 @@ CREATE TABLE IF NOT EXISTS `bibliotecasaberlivre`.`livro` (
   `isbn` CHAR(13) NOT NULL,
   `titulo` VARCHAR(100) NOT NULL,
   `anoPublicacao` INT(11) NOT NULL,
-  `Editora_cnpj` CHAR(14) NOT NULL,
+  `Editora_cnpj` CHAR(14) NULL DEFAULT NULL, -- CORREÇÃO: Removido o NOT NULL
   PRIMARY KEY (`isbn`),
   INDEX `fk_livro_editora` (`Editora_cnpj` ASC),
   CONSTRAINT `fk_livro_editora`
     FOREIGN KEY (`Editora_cnpj`)
-    REFERENCES `bibliotecasaberlivre`.`editora` (`cnpj`))
+    REFERENCES `bibliotecasaberlivre`.`editora` (`cnpj`)
+    ON UPDATE CASCADE)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4;
 
@@ -92,7 +95,8 @@ CREATE TABLE IF NOT EXISTS `bibliotecasaberlivre`.`exemplar` (
   INDEX `fk_exemplar_livro` (`Livro_isbn` ASC),
   CONSTRAINT `fk_exemplar_livro`
     FOREIGN KEY (`Livro_isbn`)
-    REFERENCES `bibliotecasaberlivre`.`livro` (`isbn`))
+    REFERENCES `bibliotecasaberlivre`.`livro` (`isbn`)
+    ON UPDATE CASCADE)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4;
 
@@ -119,10 +123,12 @@ CREATE TABLE IF NOT EXISTS `bibliotecasaberlivre`.`item_emprestimo` (
   CONSTRAINT `fk_ie_emprestimo`
     FOREIGN KEY (`Emprestimo_prot`)
     REFERENCES `bibliotecasaberlivre`.`emprestimo` (`protocolo`)
-    ON DELETE CASCADE,
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
   CONSTRAINT `fk_ie_exemplar`
     FOREIGN KEY (`Exemplar_codigo`)
-    REFERENCES `bibliotecasaberlivre`.`exemplar` (`codigo`))
+    REFERENCES `bibliotecasaberlivre`.`exemplar` (`codigo`)
+    ON UPDATE CASCADE)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4;
 
@@ -138,11 +144,13 @@ CREATE TABLE IF NOT EXISTS `bibliotecasaberlivre`.`livro_autor` (
   CONSTRAINT `fk_la_autor`
     FOREIGN KEY (`Autor_cpf`)
     REFERENCES `bibliotecasaberlivre`.`autor` (`cpfAutor`)
-    ON DELETE CASCADE,
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
   CONSTRAINT `fk_la_livro`
     FOREIGN KEY (`Livro_isbn`)
     REFERENCES `bibliotecasaberlivre`.`livro` (`isbn`)
-    ON DELETE CASCADE)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4;
 
@@ -158,11 +166,13 @@ CREATE TABLE IF NOT EXISTS `bibliotecasaberlivre`.`livro_genero` (
   CONSTRAINT `fk_lg_genero`
     FOREIGN KEY (`Genero_nome`)
     REFERENCES `bibliotecasaberlivre`.`genero` (`nome`)
-    ON DELETE CASCADE,
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
   CONSTRAINT `fk_lg_livro`
     FOREIGN KEY (`Livro_isbn`)
     REFERENCES `bibliotecasaberlivre`.`livro` (`isbn`)
-    ON DELETE CASCADE)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4;
 
@@ -177,7 +187,8 @@ CREATE TABLE IF NOT EXISTS `bibliotecasaberlivre`.`telefone_usuario` (
   CONSTRAINT `fk_tel_usuario`
     FOREIGN KEY (`Usuario_cpf`)
     REFERENCES `bibliotecasaberlivre`.`usuario` (`cpf`)
-    ON DELETE CASCADE)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4;
 
