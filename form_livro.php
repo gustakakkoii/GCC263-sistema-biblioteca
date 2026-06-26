@@ -1,109 +1,118 @@
 <?php
 header("Content-Type: text/html; charset=utf-8", true);
 include("./config.php");
+
 $con = mysqli_connect($host, $login, $senha, $bd);
+
+// Verifica se está editando ou criando um novo
+$isEditando = isset($_GET["isbn"]);
+$vetor = [];
+$autor_selecionado = "";
+$genero_selecionado = "";
+
+// Se for edição, busca os dados do livro usando uma ÚNICA consulta com JOIN
+if ($isEditando) {
+    $isbn_busca = mysqli_real_escape_string($con, $_GET['isbn']);
+
+    // Consulta otimizada trazendo o livro, o autor e o gênero de uma vez só
+    $sql = "
+        SELECT 
+            l.*, 
+            la.Autor_cpf, 
+            lg.Genero_nome 
+        FROM livro l
+        LEFT JOIN livro_autor la ON l.isbn = la.Livro_isbn
+        LEFT JOIN livro_genero lg ON l.isbn = lg.Livro_isbn
+        WHERE l.isbn = '$isbn_busca'
+        LIMIT 1
+    ";
+
+    $result = mysqli_query($con, $sql);
+
+    if ($result && mysqli_num_rows($result) > 0) {
+        $vetor = mysqli_fetch_array($result, MYSQLI_ASSOC);
+        // Separa as chaves para facilitar a marcação no HTML
+        $autor_selecionado = $vetor['Autor_cpf'];
+        $genero_selecionado = $vetor['Genero_nome'];
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
 
 <head>
     <meta charset="UTF-8">
-    <title>Incluir/Editar Livro</title>
-    <link rel="stylesheet" href="style_estante.css">
+    <title><?php echo $isEditando ? "Editar Livro" : "Cadastrar Livro"; ?></title>
+    <link rel="stylesheet" href="style.css">
 </head>
 
-<body>
-    <?php
-    $isEditando = isset($_GET["isbn"]);
-    $vetor = [];
+<body id="body">
 
-    if ($isEditando) {
-        $isbn_busca = mysqli_real_escape_string($con, $_GET['isbn']);
-        $sql = "SELECT * FROM livro WHERE isbn = '$isbn_busca'";
-        $result = mysqli_query($con, $sql);
+    <div class="form-container">
+        <h2><?php echo $isEditando ? "Editar Livro" : "Novo Livro"; ?></h2>
 
-        if ($result && mysqli_num_rows($result) > 0) {
-            $vetor = mysqli_fetch_array($result, MYSQLI_ASSOC);
-        }
-    }
-    ?>
+        <form name="form1" method="POST" action="incluir_livro.php">
 
-    <form name="form1" method="POST" action="incluir_livro.php">
+            <?php if ($isEditando && !empty($vetor['isbn'])): ?>
+                <input type="hidden" name="isbn_antigo" value="<?php echo htmlspecialchars($vetor['isbn'], ENT_QUOTES); ?>">
+            <?php endif; ?>
 
-        <?php if ($isEditando && !empty($vetor['isbn'])): ?>
-            <input type="hidden" name="isbn_antigo" value="<?php echo htmlspecialchars($vetor['isbn'], ENT_QUOTES); ?>">
-        <?php endif; ?>
+            <label for="titulo">Título do Livro:</label>
+            <input type="text" name="titulo" id="titulo" value="<?php echo htmlspecialchars(@$vetor['titulo'], ENT_QUOTES); ?>" maxlength="100" required>
 
-        <div class="livro-aberto estatico">
+            <label for="ano">Ano de Publicação:</label>
+            <input type="number" name="ano" id="ano" value="<?php echo htmlspecialchars(@$vetor['anoPublicacao'], ENT_QUOTES); ?>" required>
 
-            <div class="modal-capa c4">
-                <div class="capa-borda"></div>
-                <div class="modal-capa-titulo">
-                    <?php echo $isEditando ? "Editando<br>Obra" : "Nova<br>Obra"; ?>
-                </div>
-                <div class="modal-capa-rodape">Saber Livre</div>
+            <label for="isbn">ISBN:</label>
+            <input type="text" name="isbn" id="isbn" value="<?php echo htmlspecialchars(@$vetor['isbn'], ENT_QUOTES); ?>" maxlength="13" required>
+
+            <label for="editora_cnpj">Editora:</label>
+            <select name="editora_cnpj" id="editora_cnpj" required>
+                <option value="">Selecione uma editora...</option>
+                <?php
+                $sql_editoras = "SELECT cnpj, nomeFantasia FROM editora ORDER BY nomeFantasia";
+                $result_editoras = mysqli_query($con, $sql_editoras);
+                while ($ed = mysqli_fetch_assoc($result_editoras)) {
+                    $selected = (@$vetor['Editora_cnpj'] == $ed['cnpj']) ? "selected" : "";
+                    echo "<option value='{$ed['cnpj']}' {$selected}>{$ed['nomeFantasia']} ({$ed['cnpj']})</option>";
+                }
+                ?>
+            </select>
+
+            <label for="autor_cpf">Autor:</label>
+            <select name="autor_cpf" id="autor_cpf">
+                <option value="">Selecione um autor...</option>
+                <?php
+                $sql_autores = "SELECT cpfAutor, nome FROM autor ORDER BY nome";
+                $result_autores = mysqli_query($con, $sql_autores);
+                while ($aut = mysqli_fetch_assoc($result_autores)) {
+                    $selected = ($autor_selecionado == $aut['cpfAutor']) ? "selected" : "";
+                    echo "<option value='{$aut['cpfAutor']}' {$selected}>{$aut['nome']}</option>";
+                }
+                ?>
+            </select>
+
+            <label for="genero_nome">Gênero:</label>
+            <select name="genero_nome" id="genero_nome">
+                <option value="">Selecione um gênero...</option>
+                <?php
+                $sql_generos = "SELECT nome FROM genero ORDER BY nome";
+                $result_generos = mysqli_query($con, $sql_generos);
+                while ($gen = mysqli_fetch_assoc($result_generos)) {
+                    $selected = ($genero_selecionado == $gen['nome']) ? "selected" : "";
+                    echo "<option value='{$gen['nome']}' {$selected}>{$gen['nome']}</option>";
+                }
+                ?>
+            </select>
+
+            <div class="botoes">
+                <button type="button" class="btn-cancelar" onclick="location.href='index.php'">Cancelar</button>
+                <button type="submit" class="btn-gravar">Gravar Livro</button>
             </div>
 
-            <div class="pagina-esq">
-                <div>
-                    <p class="pagina-ficha">Ficha de Cadastro</p>
-                    <div class="titulo-form">
-                        <?php echo $isEditando ? "Editar Livro Existente" : "Cadastrar Novo Livro"; ?>
-                    </div>
+        </form>
+    </div>
 
-                    <div class="pagina-campo">
-                        <span class="pagina-label">Título do Livro:</span>
-                        <input type="text" name="titulo" class="input-estilo" value="<?php echo htmlspecialchars(@$vetor['titulo'], ENT_QUOTES); ?>" maxlength="100" required placeholder="Ex: Memórias Póstumas...">
-                    </div>
-
-                    <div class="pagina-campo">
-                        <span class="pagina-label">Ano de Publicação:</span>
-                        <input type="number" name="ano" class="input-estilo" value="<?php echo htmlspecialchars(@$vetor['anoPublicacao'], ENT_QUOTES); ?>" required placeholder="Ex: 1881">
-                    </div>
-                </div>
-                <div class="pagina-esq-num">1</div>
-            </div>
-
-            <div class="pagina-dir">
-                <div>
-                    <div class="pagina-campo">
-                        <span class="pagina-label">ISBN:</span>
-                        <input type="text" name="isbn" class="input-estilo" value="<?php echo htmlspecialchars(@$vetor['isbn'], ENT_QUOTES); ?>" maxlength="13" required placeholder="Ex: 9788535914849">
-                    </div>
-
-                    <div class="pagina-campo">
-                        <span class="pagina-label">Editora:</span>
-                        <select name="editora_cnpj" class="input-estilo" required>
-                            <option value="">Selecione uma editora...</option>
-                            <?php
-                            $sql_editoras = "SELECT cnpj, nomeFantasia FROM editora ORDER BY nomeFantasia";
-                            $result_editoras = mysqli_query($con, $sql_editoras);
-
-                            while ($ed = mysqli_fetch_assoc($result_editoras)) {
-                                // Seleciona automaticamente se estiver editando
-                                $selected = (@$vetor['Editora_cnpj'] == $ed['cnpj']) ? "selected" : "";
-                                echo "<option value='{$ed['cnpj']}' {$selected}>{$ed['nomeFantasia']} ({$ed['cnpj']})</option>";
-                            }
-                            ?>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="pagina-linhas" style="margin-top: 40px; opacity: 0.4;">
-                    <div class="linha-texto longa"></div>
-                    <div class="linha-texto media"></div>
-                    <div class="linha-texto curta"></div>
-                    <div class="linha-texto longa"></div>
-                </div>
-
-                <div class="modal-acoes">
-                    <button type="button" class="btn btn-danger" onclick="location.href='index.php'">Cancelar</button>
-                    <button type="submit" class="btn-gravar">✔ Gravar Livro</button>
-                </div>
-            </div>
-
-        </div>
-    </form>
 </body>
 
 </html>

@@ -1,0 +1,116 @@
+/* Centralizando o formulário na tela */
+#body {
+  font-family: sans-serif;
+  margin: 0;
+  background-color: #f4f6f8;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+/* Estilizando o contêiner do formulário */
+.form-container {
+  background-color: #ffffff;
+  padding: 30px 40px;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 400px;
+  /* Define a largura máxima do formulário */
+}
+
+h2 {
+  text-align: center;
+  margin-top: 0;
+  color: #333;
+}
+
+label {
+  font-weight: bold;
+  display: block;
+  margin-bottom: 5px;
+  color: #555;
+}
+
+/* Garantindo que Inputs e Selects tenham o exato mesmo tamanho */
+input[type="text"],
+input[type="number"],
+select {
+  width: 100%;
+  box-sizing: border-box;
+  /* Faz o padding não somar na largura total */
+  padding: 10px;
+  margin-bottom: 20px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+/* Organizando os botões */
+.botoes {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+button {
+  flex: 1;
+  /* Faz os botões dividirem o espaço igualmente */
+  padding: 10px;
+  cursor: pointer;
+  border: none;
+  border-radius: 4px;
+  font-weight: bold;
+}
+
+.btn-cancelar {
+  background-color: #ccc;
+  color: #333;
+}
+
+.btn-gravar {
+  background-color: #007BFF;
+  color: #fff;
+}
+
+
+/* CSS mínimo apenas para a tabela não ficar desconfigurada */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  font-family: sans-serif;
+}
+
+th,
+td {
+  border: 1px solid #aaa;
+  padding: 10px;
+  text-align: left;
+}
+
+th {
+  background-color: #f4f4f4;
+}
+
+.btn-novo {
+  display: inline-block;
+  padding: 10px 15px;
+  background: #007BFF;
+  color: white;
+  text-decoration: none;
+  border-radius: 4px;
+  font-family: sans-serif;
+}
+
+.acao-editar {
+  color: #007BFF;
+  text-decoration: none;
+  margin-right: 15px;
+}
+
+.acao-excluir {
+  color: #DC3545;
+  text-decoration: none;
+}
